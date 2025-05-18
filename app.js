@@ -6,7 +6,7 @@ let navLinks, sections, websiteUrlInput, blockBtn, blockedList, blockerOverlay;
 let blockedSiteName, backToWorkBtn, startTimer, pauseTimer, resetTimer;
 let minutesDisplay, secondsDisplay, workDurationInput, breakDurationInput;
 let catStatus, taskInput, addTaskBtn, taskList, taskReward;
-let focusSessionsEl, completedTasksEl, totalFocusTimeEl, productivityChart;
+let focusSessionsEl, completedTasksEl, totalFocusTimeEl, productivityChart, resetStatsBtn;
 let soundToggle, notificationToggle, themeOptions, catOptions;
 
 // App State
@@ -36,6 +36,148 @@ const state = {
         breakDuration: 5
     }
 };
+
+// Add audio context and initialization
+let audioContext;
+let audioInitialized = false;
+let meowBuffer = null;
+
+// Initialize audio
+function initializeAudio() {
+    if (audioInitialized) return;
+    
+    try {
+        // Create audio context
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioContext = new AudioContext();
+        
+        // Load the meow sound
+        const meowSound = document.getElementById('meow-sound');
+        if (meowSound) {
+            console.log('Found meow sound element, setting up');
+            meowSound.load();
+        }
+        
+        // Fetch and decode the audio file directly
+        fetch('meow_audio.mp3')
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+            .then(audioBuffer => {
+                meowBuffer = audioBuffer;
+                console.log('Meow sound loaded successfully');
+                
+                // Play a silent sound to unlock audio on iOS/Safari
+                playSilentSound();
+            })
+            .catch(error => console.error('Error loading meow sound:', error));
+        
+        audioInitialized = true;
+        console.log('Audio initialized successfully');
+    } catch (error) {
+        console.error('Error initializing audio:', error);
+    }
+}
+
+// Play a silent sound to unlock audio on mobile
+function playSilentSound() {
+    try {
+        const oscillator = audioContext.createOscillator();
+        oscillator.frequency.value = 1; // Inaudible
+        oscillator.connect(audioContext.destination);
+        oscillator.start(0);
+        oscillator.stop(audioContext.currentTime + 0.001);
+        console.log('Silent sound played');
+    } catch (e) {
+        console.error('Silent sound play error:', e);
+    }
+}
+
+// Enhanced sound playing function
+function playCatSound(soundType) {
+    console.log(`Attempting to play ${soundType} sound`);
+    
+    if (!state.settings.soundEnabled) {
+        console.log('Sound disabled in settings');
+        return;
+    }
+    
+    // Try multiple methods to play sound
+    
+    // Method 1: Using the audio element
+    const meowSound = document.getElementById('meow-sound');
+    if (meowSound) {
+        console.log('Playing via audio element');
+        meowSound.currentTime = 0; // Reset to beginning
+        const playPromise = meowSound.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.error('Audio element play error:', error);
+                // Try method 2 if method 1 fails
+                playViaWebAudio(soundType);
+            });
+        }
+    } else {
+        // If audio element not found, try method 2
+        playViaWebAudio(soundType);
+    }
+}
+
+// Play sound via Web Audio API
+function playViaWebAudio(soundType) {
+    console.log('Playing via Web Audio API');
+    
+    // Initialize audio if needed
+    if (!audioContext) {
+        try {
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioContext = new AudioContext();
+        } catch (e) {
+            console.error('Web Audio API not supported:', e);
+            return;
+        }
+    }
+    
+    // Resume audio context if suspended
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+    
+    // If we have the buffer, play it
+    if (meowBuffer && soundType === 'meow') {
+        try {
+            const source = audioContext.createBufferSource();
+            source.buffer = meowBuffer;
+            source.connect(audioContext.destination);
+            source.start();
+            console.log('Playing sound via buffer');
+        } catch (e) {
+            console.error('Error playing buffer:', e);
+        }
+    } else {
+        // Load and play if buffer not available
+        console.log('No buffer available, loading from URL');
+        
+        const soundUrl = soundType === 'meow' ? 'meow_audio.mp3' : 
+            'https://assets.mixkit.co/sfx/preview/mixkit-kitty-purring-296.mp3';
+        
+        fetch(soundUrl)
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+            .then(audioBuffer => {
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(audioContext.destination);
+                source.start();
+                
+                // Store for future use
+                if (soundType === 'meow') {
+                    meowBuffer = audioBuffer;
+                }
+            })
+            .catch(error => console.error('Error playing sound:', error));
+    }
+}
 
 // Make sure DOM elements are loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -96,6 +238,7 @@ function initializeDOMElements() {
     completedTasksEl = document.getElementById('completed-tasks');
     totalFocusTimeEl = document.getElementById('total-focus-time');
     productivityChart = document.getElementById('productivity-chart');
+    resetStatsBtn = document.getElementById('reset-stats-btn');
     
     // Settings elements
     soundToggle = document.getElementById('sound-toggle');
@@ -122,7 +265,7 @@ function initializeDOMElements() {
         blocker: { websiteUrlInput, blockBtn, blockedList, blockerOverlay },
         timer: { startTimer, pauseTimer, resetTimer, minutesDisplay, secondsDisplay },
         tasks: { taskInput, addTaskBtn, taskList },
-        progress: { focusSessionsEl, completedTasksEl, totalFocusTimeEl, productivityChart },
+        progress: { focusSessionsEl, completedTasksEl, totalFocusTimeEl, productivityChart, resetStatsBtn },
         settings: { soundToggle, notificationToggle, themeOptions, catOptions }
     };
 }
@@ -130,6 +273,9 @@ function initializeDOMElements() {
 // Initialize the app
 function initApp() {
     console.log('Initializing app components');
+    
+    // Initialize audio system
+    initializeAudio();
     
     // Create fallback images for any missing cat images
     createFallbackCatImages();
@@ -179,6 +325,11 @@ function initApp() {
     // Initialize progress charts
     updateStats();
     renderProductivityChart();
+    
+    // Initialize reset stats button
+    if (resetStatsBtn) {
+        resetStatsBtn.addEventListener('click', resetStats);
+    }
 
     // Initialize settings
     initializeSettings();
@@ -640,8 +791,8 @@ function completeWorkSession() {
     updateStats();
     renderProductivityChart();
     
-    // Play sound when work session completes
-    playCatSound('meow');
+    // Super reliable sound triggering with redundancy
+    playCatSound('meow'); // Try immediate play
     
     // Show notification
     showNotification('Work session completed! Time for a break!');
@@ -653,6 +804,11 @@ function completeWorkSession() {
     if (startTimer) startTimer.textContent = 'Start Break';
     if (startTimer) startTimer.disabled = false;
     if (pauseTimer) pauseTimer.disabled = true;
+    
+    // Try playing the sound again in case the first attempt failed
+    setTimeout(() => {
+        playCatSound('meow');
+    }, 300);
     
     // Auto-start break after 1.5 seconds
     setTimeout(() => {
@@ -977,6 +1133,41 @@ function updateStats() {
     renderProductivityChart();
 }
 
+// Reset statistics function
+function resetStats() {
+    // Show confirmation dialog
+    const confirmReset = confirm('Are you sure you want to reset all your statistics? This action cannot be undone.');
+    
+    if (confirmReset) {
+        // Reset stats in state
+        state.stats = {
+            focusSessions: 0,
+            completedTasks: 0,
+            totalFocusTime: 0,
+            dailyFocusTime: {}
+        };
+        
+        // Save to localStorage
+        saveStats();
+        
+        // Update UI
+        updateStats();
+        renderProductivityChart();
+        
+        // Provide feedback
+        showNotification('Statistics have been reset successfully');
+        
+        // Add a small animation to the stats cards
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach(card => {
+            card.classList.add('reset-animation');
+            setTimeout(() => {
+                card.classList.remove('reset-animation');
+            }, 1000);
+        });
+    }
+}
+
 function renderProductivityChart() {
     const chartCanvas = document.getElementById('productivity-chart');
     if (!chartCanvas) return;
@@ -1009,6 +1200,30 @@ function renderProductivityChart() {
         window.productivityChartInstance.destroy();
     }
     
+    // Set colors based on current theme
+    let focusTimeColor, focusTimeBorder, taskColor, taskBorder;
+    
+    // Get current theme
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'default';
+    
+    // Set colors based on theme
+    if (currentTheme === 'dark') {
+        focusTimeColor = 'rgba(126, 77, 210, 0.6)';  // Purple - dark theme
+        focusTimeBorder = 'rgba(126, 77, 210, 1)';
+        taskColor = 'rgba(255, 126, 182, 0.6)';  // Pink - dark theme
+        taskBorder = 'rgba(255, 126, 182, 1)';
+    } else if (currentTheme === 'pastel') {
+        focusTimeColor = 'rgba(189, 178, 255, 0.6)';  // Soft purple - pastel theme
+        focusTimeBorder = 'rgba(189, 178, 255, 1)';
+        taskColor = 'rgba(255, 175, 204, 0.6)';  // Soft pink - pastel theme
+        taskBorder = 'rgba(255, 175, 204, 1)';
+    } else {
+        focusTimeColor = 'rgba(161, 98, 232, 0.6)';  // Default purple
+        focusTimeBorder = 'rgba(161, 98, 232, 1)';
+        taskColor = 'rgba(255, 107, 107, 0.6)';  // Default pink
+        taskBorder = 'rgba(255, 107, 107, 1)';
+    }
+    
     // Create new chart with improved styling
     window.productivityChartInstance = new Chart(chartCanvas, {
         type: 'bar',
@@ -1018,8 +1233,8 @@ function renderProductivityChart() {
                 {
                     label: 'Focus Time (minutes)',
                     data: focusTimeData,
-                    backgroundColor: 'rgba(161, 98, 232, 0.5)',
-                    borderColor: 'rgba(161, 98, 232, 1)',
+                    backgroundColor: focusTimeColor,
+                    borderColor: focusTimeBorder,
                     borderWidth: 1,
                     borderRadius: 5,
                     barPercentage: 0.6
@@ -1027,8 +1242,8 @@ function renderProductivityChart() {
                 {
                     label: 'Completed Tasks',
                     data: tasksData,
-                    backgroundColor: 'rgba(255, 107, 107, 0.5)',
-                    borderColor: 'rgba(255, 107, 107, 1)',
+                    backgroundColor: taskColor,
+                    borderColor: taskBorder,
                     borderWidth: 1,
                     borderRadius: 5,
                     barPercentage: 0.6
@@ -1046,11 +1261,12 @@ function renderProductivityChart() {
                         padding: 20,
                         font: {
                             size: 12
-                        }
+                        },
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
                     }
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    backgroundColor: currentTheme === 'dark' ? 'rgba(30, 30, 45, 0.9)' : 'rgba(0, 0, 0, 0.8)',
                     padding: 12,
                     titleFont: {
                         size: 14
@@ -1065,12 +1281,13 @@ function renderProductivityChart() {
                     beginAtZero: true,
                     grid: {
                         drawBorder: false,
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        color: currentTheme === 'dark' ? 'rgba(200, 200, 200, 0.1)' : 'rgba(0, 0, 0, 0.1)'
                     },
                     ticks: {
                         font: {
                             size: 11
-                        }
+                        },
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
                     }
                 },
                 x: {
@@ -1080,7 +1297,8 @@ function renderProductivityChart() {
                     ticks: {
                         font: {
                             size: 11
-                        }
+                        },
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
                     }
                 }
             }
@@ -1124,6 +1342,9 @@ function updateTheme(e) {
     
     saveSettings();
     showNotification(`Theme updated to ${selectedTheme}`);
+    
+    // Update chart colors to match the new theme
+    renderProductivityChart();
 }
 
 function updateCatCharacter(e) {
@@ -1207,418 +1428,6 @@ function requestNotificationPermission() {
     }
 }
 
-function playCatSound(soundType) {
-    if (!state.settings.soundEnabled) return;
-    
-    console.log(`Playing ${soundType} sound`);
-    
-    // Make sure we use the uploaded audio file
-    const audio = new Audio();
-    
-    switch (soundType) {
-        case 'meow':
-            // Use the uploaded cat meow sound
-            audio.src = 'cat-meow-8-fx-306184.mp3';
-            // Ensure it's loaded
-            audio.load();
-            break;
-        case 'purr':
-            audio.src = 'https://assets.mixkit.co/sfx/preview/mixkit-kitty-purring-296.mp3';
-            break;
-        default:
-            return;
-    }
-    
-    // Play with increased volume and error handling
-    audio.volume = 0.7; // 70% volume
-    audio.play().catch(e => {
-        console.error('Audio play error:', e);
-        // Try again after a short delay
-        setTimeout(() => {
-            audio.play().catch(e2 => 
-                console.error('Second attempt audio play error:', e2)
-            );
-        }, 500);
-    });
-}
-
-// Add CSS for notifications
-const notificationStyle = document.createElement('style');
-notificationStyle.textContent = `
-    .app-notification {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%) translateY(100px);
-        background-color: var(--primary-color);
-        color: white;
-        padding: 12px 25px;
-        border-radius: 30px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        z-index: 1001;
-        transition: transform 0.3s ease;
-    }
-    
-    .app-notification.show {
-        transform: translateX(-50%) translateY(0);
-    }
-    
-    [data-theme="dark"] {
-        --primary-color: #7c4dff;
-        --secondary-color: #64b5f6;
-        --accent-color: #43a047;
-        --background-color: #212121;
-        --text-color: #f5f5f5;
-        --border-color: #424242;
-        --card-background: #333333;
-        --shadow-color: rgba(0, 0, 0, 0.3);
-    }
-    
-    [data-theme="pastel"] {
-        --primary-color: #ffafbd;
-        --secondary-color: #ffc3a0;
-        --accent-color: #a8e6cf;
-        --background-color: #fdffed;
-        --text-color: #666;
-        --border-color: #dcd0d0;
-        --card-background: #ffffff;
-        --shadow-color: rgba(0, 0, 0, 0.05);
-    }
-`;
-document.head.appendChild(notificationStyle);
-
-// Add CSS for enhanced website blocker functionality
-const additionalStyles = document.createElement('style');
-additionalStyles.textContent = `
-    .test-blocking {
-        margin-top: 30px;
-        padding: 20px;
-        background-color: rgba(255, 107, 107, 0.1);
-        border-radius: 10px;
-    }
-    
-    .test-blocking h3 {
-        margin-top: 0;
-        color: var(--primary-color);
-    }
-    
-    .test-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 15px;
-    }
-    
-    .test-block-btn {
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    
-    .test-block-btn:hover {
-        background-color: var(--accent-color);
-    }
-    
-    .test-block-btn.random {
-        background-color: var(--secondary-color);
-    }
-    
-    .test-block-btn.random:hover {
-        background-color: var(--accent-color);
-    }
-    
-    .wiggle {
-        animation: wiggle 1s ease infinite;
-    }
-    
-    @keyframes wiggle {
-        0%, 100% { transform: rotate(-5deg); }
-        50% { transform: rotate(5deg); }
-    }
-    
-    .blocker-content {
-        animation: scaleIn 0.3s ease forwards;
-    }
-    
-    @keyframes scaleIn {
-        0% { transform: scale(0.8); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
-    }
-`;
-
-document.head.appendChild(additionalStyles);
-
-// Modified initialize function to update test buttons when blocked websites change
-const originalRenderBlockedWebsites = renderBlockedWebsites;
-renderBlockedWebsites = function() {
-    // Call the original function
-    originalRenderBlockedWebsites.call(this);
-    
-    // Update the test buttons
-    updateTestButtons();
-};
-
-// =========================
-// Browser Simulator Functions
-// =========================
-
-function initBrowserSimulator() {
-    const browserUrlInput = document.getElementById('browser-url');
-    const browserGoBtn = document.getElementById('browser-go');
-    const browserDisplay = document.getElementById('browser-display');
-    
-    // Handle browser URL input with Enter key
-    browserUrlInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            simulateBrowsing();
-        }
-    });
-    
-    // Handle browser go button click
-    browserGoBtn.addEventListener('click', simulateBrowsing);
-    
-    function simulateBrowsing() {
-        const url = browserUrlInput.value.trim().toLowerCase();
-        
-        if (!url) {
-            showNotification('Please enter a URL to visit');
-            return;
-        }
-        
-        // Extract domain
-        const domain = extractDomain(url);
-        
-        // Check if the site is blocked
-        if (state.blockedWebsites.includes(domain)) {
-            // Show the blocked overlay with the domain
-            showBlockedOverlay(domain);
-            return;
-        }
-        
-        // If not blocked, display a simulated website based on the domain type
-        displaySimulatedWebsite(domain);
-    }
-    
-    function displaySimulatedWebsite(domain) {
-        // Clear the display
-        browserDisplay.innerHTML = '';
-        
-        // Create a simulated website based on domain type
-        const websiteEl = document.createElement('div');
-        websiteEl.classList.add('browser-website');
-        
-        let websiteType = 'productive'; // default type
-        let websiteContent = '';
-        
-        // Determine website type based on domain keywords
-        const socialKeywords = ['facebook', 'twitter', 'instagram', 'tiktok', 'social', 'reddit'];
-        const videoKeywords = ['youtube', 'netflix', 'hulu', 'video', 'tiktok', 'stream'];
-        const shoppingKeywords = ['amazon', 'ebay', 'shop', 'buy', 'store', 'shopping'];
-        
-        // Check domain against keywords
-        if (socialKeywords.some(keyword => domain.includes(keyword))) {
-            websiteType = 'social';
-        } else if (videoKeywords.some(keyword => domain.includes(keyword))) {
-            websiteType = 'video';
-        } else if (shoppingKeywords.some(keyword => domain.includes(keyword))) {
-            websiteType = 'shopping';
-        }
-        
-        // Add the website type class
-        websiteEl.classList.add(websiteType);
-        
-        // Create content based on website type
-        switch (websiteType) {
-            case 'social':
-                websiteContent = `
-                    <h2><i class="fas fa-users"></i> ${domain}</h2>
-                    <div class="fake-feed">
-                        <p>Welcome to ${domain} - Social Media Platform</p>
-                        <div class="fake-post">
-                            <p><strong>User123:</strong> Just posted a new photo!</p>
-                            <div class="fake-interactions">
-                                <span><i class="fas fa-heart"></i> 24 Likes</span>
-                                <span><i class="fas fa-comment"></i> 5 Comments</span>
-                            </div>
-                        </div>
-                        <div class="fake-post">
-                            <p><strong>FriendXYZ:</strong> Check out this cool video!</p>
-                            <div class="fake-interactions">
-                                <span><i class="fas fa-heart"></i> 105 Likes</span>
-                                <span><i class="fas fa-comment"></i> 12 Comments</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                break;
-                
-            case 'video':
-                websiteContent = `
-                    <h2><i class="fas fa-video"></i> ${domain}</h2>
-                    <div class="fake-video-page">
-                        <div class="fake-video-player">
-                            <div class="fake-player-controls">
-                                <i class="fas fa-play-circle"></i>
-                            </div>
-                        </div>
-                        <h3>Popular Video Title</h3>
-                        <p>1.2M views • 2 days ago</p>
-                        <div class="fake-recommendations">
-                            <p>Recommended videos:</p>
-                            <ul>
-                                <li>Amazing Cat Tricks - 5M views</li>
-                                <li>10 Productivity Tips - 782K views</li>
-                                <li>Newest Trending Video - 3.4M views</li>
-                            </ul>
-                        </div>
-                    </div>
-                `;
-                break;
-                
-            case 'shopping':
-                websiteContent = `
-                    <h2><i class="fas fa-shopping-cart"></i> ${domain}</h2>
-                    <div class="fake-shop">
-                        <p>Welcome to ${domain} - Shopping Platform</p>
-                        <div class="fake-products">
-                            <div class="fake-product">
-                                <div class="fake-product-image"></div>
-                                <h3>Product Name</h3>
-                                <p>$49.99</p>
-                                <button class="fake-button">Add to Cart</button>
-                            </div>
-                            <div class="fake-product">
-                                <div class="fake-product-image"></div>
-                                <h3>Another Product</h3>
-                                <p>$29.99</p>
-                                <button class="fake-button">Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                break;
-                
-            default: // productive
-                websiteContent = `
-                    <h2><i class="fas fa-briefcase"></i> ${domain}</h2>
-                    <div class="fake-productive-site">
-                        <p>Welcome to ${domain}</p>
-                        <div class="fake-content">
-                            <h3>This is a productive website</h3>
-                            <p>This site is not blocked because it helps with your productivity.</p>
-                            <p>Keep up the good work!</p>
-                            <div class="fake-cat">
-                                <img src="img/cat-working.png" alt="Working Cat" style="height: 100px;">
-                                <p>This cat approves of your productive browsing!</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-        }
-        
-        websiteEl.innerHTML = websiteContent;
-        browserDisplay.appendChild(websiteEl);
-        
-        // Add additional CSS for fake website elements
-        const fakeElementsStyle = document.createElement('style');
-        fakeElementsStyle.textContent = `
-            .fake-feed, .fake-video-page, .fake-shop, .fake-productive-site {
-                padding: 20px;
-            }
-            
-            .fake-post {
-                margin-bottom: 15px;
-                padding: 10px;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 8px;
-            }
-            
-            .fake-interactions {
-                display: flex;
-                gap: 15px;
-                margin-top: 8px;
-                font-size: 0.9em;
-            }
-            
-            .fake-video-player {
-                background: #000;
-                height: 180px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-bottom: 15px;
-                border-radius: 8px;
-            }
-            
-            .fake-player-controls {
-                font-size: 4em;
-                opacity: 0.7;
-            }
-            
-            .fake-recommendations ul {
-                list-style: none;
-                padding: 0;
-            }
-            
-            .fake-recommendations li {
-                padding: 8px 0;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            
-            .fake-products {
-                display: flex;
-                gap: 20px;
-                margin-top: 20px;
-            }
-            
-            .fake-product {
-                background: rgba(255, 255, 255, 0.1);
-                padding: 15px;
-                border-radius: 8px;
-                text-align: center;
-            }
-            
-            .fake-product-image {
-                background: rgba(255, 255, 255, 0.2);
-                height: 100px;
-                width: 100px;
-                margin: 0 auto;
-                border-radius: 8px;
-            }
-            
-            .fake-button {
-                background: white;
-                color: #ff9900;
-                border: none;
-                padding: 8px 15px;
-                border-radius: 5px;
-                margin-top: 10px;
-                cursor: pointer;
-            }
-            
-            .fake-cat {
-                margin-top: 20px;
-                text-align: center;
-            }
-        `;
-        document.head.appendChild(fakeElementsStyle);
-        
-        // Update the address bar with the proper URL format
-        if (!browserUrlInput.value.startsWith('http')) {
-            browserUrlInput.value = 'https://' + domain;
-        }
-        
-        // Show notification
-        showNotification(`Visited ${domain}`);
-    }
-}
-
-console.log('App.js loaded successfully');
-
 // After DOMContentLoaded event listener
 function createFallbackCatImages() {
     console.log('Creating fallback cat images');
@@ -1660,4 +1469,6 @@ function createFallbackCatImages() {
             });
         }
     }
-} 
+}
+
+console.log('App.js loaded successfully'); 

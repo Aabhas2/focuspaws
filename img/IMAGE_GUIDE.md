@@ -1,4 +1,4 @@
-# Cat Images for FocusPaws
+# Image Guide for FocusPaws
 
 This directory contains images used in the FocusPaws productivity app. The following images are needed:
 

@@ -145,6 +145,10 @@
             <section id="timer-section" class="active-section">
                 <h2>Purrmodoro <i class="fas fa-clock"></i></h2>
                 <div class="timer-container">
+                    <!-- Add audio elements for sounds -->
+                    <audio id="meow-sound" preload="auto">
+                        <source src="meow_audio.mp3" type="audio/mpeg">
+                    </audio>
                     <div class="timer-display">
                         <span id="minutes">25</span>:<span id="seconds">00</span>
                     </div>
@@ -152,43 +156,53 @@
                         <!-- Enhanced SVG Cat Animation with better ears -->
                         <div class="svg-cat-container" id="cat-status">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-cat">
-                                <!-- Cat head shape -->
-                                <circle cx="256" cy="256" r="150" fill="#FFD7BA" />
+                                <!-- Cat head shape - slightly more round -->
+                                <circle cx="256" cy="256" r="150" fill="#FFE4D6" />
                                 
-                                <!-- Improved cat ears - more triangular and detailed -->
-                                <path d="M156,116 L206,216 L126,196 Z" fill="#FFD7BA" stroke="#F0C9AD" stroke-width="2" class="cat-ear cat-ear-left" />
-                                <path d="M356,116 L306,216 L386,196 Z" fill="#FFD7BA" stroke="#F0C9AD" stroke-width="2" class="cat-ear cat-ear-right" />
+                                <!-- Improved cat ears - rounder and cuter -->
+                                <path d="M166,126 L216,216 L136,196 Z" fill="#FFE4D6" stroke="#F0C9AD" stroke-width="2" class="cat-ear cat-ear-left" />
+                                <path d="M346,126 L296,216 L376,196 Z" fill="#FFE4D6" stroke="#F0C9AD" stroke-width="2" class="cat-ear cat-ear-right" />
                                 
                                 <!-- Inner ear details -->
-                                <path d="M156,126 L196,206" stroke="#F0C9AD" stroke-width="4" class="cat-ear-inner cat-ear-inner-left" />
-                                <path d="M356,126 L316,206" stroke="#F0C9AD" stroke-width="4" class="cat-ear-inner cat-ear-inner-right" />
+                                <path d="M166,136 L206,206" stroke="#F0C9AD" stroke-width="5" class="cat-ear-inner cat-ear-inner-left" />
+                                <path d="M346,136 L306,206" stroke="#F0C9AD" stroke-width="5" class="cat-ear-inner cat-ear-inner-right" />
                                 
-                                <!-- Cat eyes - more expressive with eyelids -->
-                                <ellipse cx="206" cy="236" rx="25" ry="20" fill="#333" class="cat-eye cat-eye-left" />
-                                <ellipse cx="306" cy="236" rx="25" ry="20" fill="#333" class="cat-eye cat-eye-right" />
+                                <!-- Add cute blush spots on cheeks -->
+                                <circle cx="186" cy="276" r="18" fill="#FFCACA" opacity="0.6" class="cat-blush cat-blush-left" />
+                                <circle cx="326" cy="276" r="18" fill="#FFCACA" opacity="0.6" class="cat-blush cat-blush-right" />
+                                
+                                <!-- Cat eyes - larger and rounder for cuteness -->
+                                <ellipse cx="206" cy="236" rx="28" ry="24" fill="#333" class="cat-eye cat-eye-left" />
+                                <ellipse cx="306" cy="236" rx="28" ry="24" fill="#333" class="cat-eye cat-eye-right" />
                                 
                                 <!-- Eyelids that can close -->
-                                <path d="M181,236 Q206,216 231,236" fill="transparent" stroke="#333" stroke-width="3" class="cat-eyelid cat-eyelid-left" />
-                                <path d="M281,236 Q306,216 331,236" fill="transparent" stroke="#333" stroke-width="3" class="cat-eyelid cat-eyelid-right" />
+                                <path d="M178,236 Q206,216 234,236" fill="transparent" stroke="#333" stroke-width="3" class="cat-eyelid cat-eyelid-left" />
+                                <path d="M278,236 Q306,216 334,236" fill="transparent" stroke="#333" stroke-width="3" class="cat-eyelid cat-eyelid-right" />
                                 
                                 <!-- Cat pupils - larger and more expressive -->
-                                <circle cx="206" cy="236" r="12" fill="#fff" class="cat-pupil cat-pupil-left" />
-                                <circle cx="306" cy="236" r="12" fill="#fff" class="cat-pupil cat-pupil-right" />
+                                <circle cx="206" cy="236" r="14" fill="#000" class="cat-pupil cat-pupil-left" />
+                                <circle cx="306" cy="236" r="14" fill="#000" class="cat-pupil cat-pupil-right" />
                                 
-                                <!-- Cat nose - slightly larger and pinker -->
-                                <path d="M256,276 L246,296 L266,296 Z" fill="#ff9e9e" class="cat-nose" />
+                                <!-- Add cute eye highlight reflections -->
+                                <circle cx="214" cy="228" r="6" fill="#fff" class="cat-eye-highlight cat-eye-highlight-left" />
+                                <circle cx="314" cy="228" r="6" fill="#fff" class="cat-eye-highlight cat-eye-highlight-right" />
+                                <circle cx="200" cy="242" r="3" fill="#fff" class="cat-eye-highlight-small cat-eye-highlight-small-left" />
+                                <circle cx="300" cy="242" r="3" fill="#fff" class="cat-eye-highlight-small cat-eye-highlight-small-right" />
                                 
-                                <!-- Cat mouth - more dynamic -->
-                                <path d="M216,316 Q256,346 296,316" fill="none" stroke="#333" stroke-width="3" class="cat-mouth" />
+                                <!-- Cat nose - softer and heart-shaped -->
+                                <path d="M256,276 Q246,296 256,296 Q266,296 256,276" fill="#FF9E9E" stroke="#FF8B8B" stroke-width="1" class="cat-nose" />
                                 
-                                <!-- Cat whiskers - more and better positioned -->
-                                <line x1="136" y1="286" x2="216" y2="286" stroke="#999" stroke-width="2" class="cat-whisker" />
-                                <line x1="136" y1="296" x2="216" y2="296" stroke="#999" stroke-width="2" class="cat-whisker" />
-                                <line x1="136" y1="306" x2="216" y2="306" stroke="#999" stroke-width="2" class="cat-whisker" />
+                                <!-- Cat mouth - cuter smile -->
+                                <path d="M226,316 Q256,336 286,316" fill="none" stroke="#333" stroke-width="2.5" class="cat-mouth" />
                                 
-                                <line x1="376" y1="286" x2="296" y2="286" stroke="#999" stroke-width="2" class="cat-whisker" />
-                                <line x1="376" y1="296" x2="296" y2="296" stroke="#999" stroke-width="2" class="cat-whisker" />
-                                <line x1="376" y1="306" x2="296" y2="306" stroke="#999" stroke-width="2" class="cat-whisker" />
+                                <!-- Cat whiskers - slightly curved for more expression -->
+                                <path d="M136,286 Q156,288 216,286" stroke="#999" stroke-width="2" class="cat-whisker" />
+                                <path d="M136,296 Q156,298 216,296" stroke="#999" stroke-width="2" class="cat-whisker" />
+                                <path d="M136,306 Q156,304 216,306" stroke="#999" stroke-width="2" class="cat-whisker" />
+                                
+                                <path d="M376,286 Q356,288 296,286" stroke="#999" stroke-width="2" class="cat-whisker" />
+                                <path d="M376,296 Q356,298 296,296" stroke="#999" stroke-width="2" class="cat-whisker" />
+                                <path d="M376,306 Q356,304 296,306" stroke="#999" stroke-width="2" class="cat-whisker" />
                             </svg>
                         </div>
                         <!-- Fallback image -->
@@ -276,6 +290,11 @@
                             <p id="total-focus-time">0 mins</p>
                             <i class="fas fa-hourglass-half"></i>
                         </div>
+                    </div>
+                    <div class="reset-stats-container">
+                        <button id="reset-stats-btn" class="reset-stats-btn">
+                            <i class="fas fa-redo-alt"></i> Reset Statistics
+                        </button>
                     </div>
                 </div>
             </section>

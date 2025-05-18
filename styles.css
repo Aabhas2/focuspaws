@@ -1,6 +1,6 @@
 /* Global Styles */
 :root {
-    /* Default theme */
+    /* Default theme - Tabby cat inspired */
     --primary-color: #ff6b6b;
     --secondary-color: #a162e8;
     --accent-color: #66d8f5;
@@ -12,6 +12,36 @@
     --error-color: #f44336;
     --shadow-color: rgba(0, 0, 0, 0.1);
     --card-background: #ffffff;
+}
+
+/* Dark theme - Night cat inspired */
+[data-theme="dark"] {
+    --primary-color: #ff7eb6;
+    --secondary-color: #7e4dd2;
+    --accent-color: #50b5e9;
+    --background-color: #1a1a2e;
+    --text-color: #e6e6e6;
+    --border-color: #444;
+    --success-color: #66bb6a;
+    --warning-color: #ffa726;
+    --error-color: #ef5350;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --card-background: #222236;
+}
+
+/* Pastel theme - Sleepy cat inspired */
+[data-theme="pastel"] {
+    --primary-color: #ffafcc;
+    --secondary-color: #bdb2ff;
+    --accent-color: #a2d2ff;
+    --background-color: #fdffed;
+    --text-color: #555;
+    --border-color: #dcd0d0;
+    --success-color: #98d8aa;
+    --warning-color: #ffd6a5;
+    --error-color: #ffadad;
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --card-background: #fffcf5;
 }
 
 * {
@@ -44,12 +74,35 @@ body::before {
     z-index: -1;
 }
 
+/* Theme-specific wallpaper backgrounds */
+[data-theme="dark"] body::before {
+    opacity: 0.1; /* Darker theme needs less opacity on wallpaper */
+}
+
+[data-theme="pastel"] body::before {
+    opacity: 0.2; /* Pastel theme needs more visibility of wallpaper */
+}
+
 .app-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
     position: relative;
     z-index: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .app-container {
+    background-color: rgba(30, 30, 45, 0.2);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="pastel"] .app-container {
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
 }
 
 header {
@@ -77,12 +130,12 @@ header {
 .logo {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
     padding: 10px;
 }
 
 .logo img {
-    height: 60px;
+    height: 70px;
     width: auto;
     transition: transform 0.3s ease;
 }
@@ -92,7 +145,7 @@ header {
 }
 
 .logo h1 {
-    font-size: 2.2rem;
+    font-size: 2.4rem;
     color: var(--primary-color);
     font-weight: bold;
     letter-spacing: 0.5px;
@@ -124,22 +177,23 @@ nav ul li a:hover, nav ul li a.active {
 /* Section Styles */
 section {
     display: none;
-    background-color: var(--card-background);
+    background-color: rgba(255, 255, 255, 0.85);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 5px 15px var(--shadow-color);
     margin-bottom: 30px;
     position: relative;
     backdrop-filter: blur(5px);
-    background-color: rgba(255, 255, 255, 0.85);
 }
 
 [data-theme="dark"] section {
-    background-color: rgba(33, 33, 33, 0.9);
+    background-color: rgba(34, 34, 54, 0.9);
+    color: var(--text-color);
 }
 
 [data-theme="pastel"] section {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 252, 245, 0.8);
+    color: var(--text-color);
 }
 
 section.active-section {
@@ -182,6 +236,8 @@ section h2 i {
     border: 1px solid var(--border-color);
     border-radius: 5px 0 0 5px;
     font-size: 1rem;
+    background-color: var(--card-background);
+    color: var(--text-color);
 }
 
 .blocker-form button {
@@ -232,20 +288,21 @@ section h2 i {
     background-color: var(--primary-color);
     color: white;
     border: none;
-    padding: 12px 25px;
-    border-radius: 25px;
-    margin: 0 10px;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-size: 1.2rem;
     cursor: pointer;
-    font-size: 1.1rem;
-    font-weight: 500;
     transition: all 0.3s ease;
-    box-shadow: 0 3px 10px rgba(255, 107, 107, 0.2);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+    margin: 0 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
 }
 
 .timer-btn:hover:not(:disabled) {
     background-color: var(--accent-color);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(102, 216, 245, 0.4);
 }
 
 .timer-btn:disabled {
@@ -256,16 +313,43 @@ section h2 i {
 }
 
 .timer-display {
-    font-size: 6rem;
+    font-size: 5rem;
     font-weight: bold;
-    color: var(--primary-color);
-    margin: 30px 0;
-    text-shadow: 2px 2px 10px rgba(255, 107, 107, 0.2);
     font-family: 'Roboto Mono', monospace;
+    text-align: center;
+    margin: 30px 0;
+    color: var(--primary-color);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timer-display:hover {
+    transform: translateY(-3px);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1), 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .timer-display {
+    background-color: rgba(40, 40, 65, 0.7);
+    color: var(--primary-color);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3), 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="pastel"] .timer-display {
+    background-color: rgba(255, 250, 240, 0.7);
+    color: var(--primary-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05), 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .cat-animation {
-    margin: 20px 0;
+    margin: 30px 0;
+    text-align: center;
+    position: relative;
 }
 
 .cat-animation img {
@@ -298,6 +382,8 @@ section h2 i {
     font-size: 1rem;
     text-align: center;
     transition: border-color 0.3s ease;
+    background-color: var(--card-background);
+    color: var(--text-color);
 }
 
 .setting input:focus {
@@ -322,6 +408,8 @@ section h2 i {
     border: 1px solid var(--border-color);
     border-radius: 5px 0 0 5px;
     font-size: 1rem;
+    background-color: var(--card-background);
+    color: var(--text-color);
 }
 
 .task-form button {
@@ -354,6 +442,7 @@ section h2 i {
     transition: all 0.3s ease;
     cursor: grab;
     position: relative;
+    color: var(--text-color);
 }
 
 #task-list li.dragging {
@@ -394,6 +483,16 @@ section h2 i {
     background-color: rgba(76, 175, 80, 0.1);
     text-decoration: line-through;
     color: #888;
+}
+
+[data-theme="dark"] #task-list li.completed {
+    background-color: rgba(102, 187, 106, 0.15);
+    color: #aaa;
+}
+
+[data-theme="pastel"] #task-list li.completed {
+    background-color: rgba(152, 216, 170, 0.15);
+    color: #999;
 }
 
 .task-actions button {
@@ -451,10 +550,16 @@ section h2 i {
 .chart-container {
     flex: 2;
     height: 300px;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 3px 10px var(--shadow-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chart-container:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 .stats {
@@ -465,21 +570,23 @@ section h2 i {
 
 .stat-card {
     flex: 1;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     padding: 20px;
     text-align: center;
     box-shadow: 0 3px 10px var(--shadow-color);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .stat-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 .stat-card h4 {
     color: var(--secondary-color);
     margin-bottom: 15px;
+    font-size: 1.1rem;
 }
 
 .stat-card p {
@@ -494,6 +601,87 @@ section h2 i {
     color: var(--accent-color);
 }
 
+/* Animation for stat card reset */
+@keyframes reset-pulse {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.stat-card.reset-animation {
+    animation: reset-pulse 0.8s ease;
+}
+
+/* Reset Stats Button */
+.reset-stats-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.reset-stats-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.reset-stats-btn:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+}
+
+.reset-stats-btn i {
+    font-size: 1rem;
+}
+
+/* Dark theme styling for reset button */
+[data-theme="dark"] .reset-stats-btn {
+    background-color: #6a43c0;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .reset-stats-btn:hover {
+    background-color: #e05f5f;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Pastel theme styling for reset button */
+[data-theme="pastel"] .reset-stats-btn {
+    background-color: #9f86c0;
+    color: #fff;
+}
+
+[data-theme="pastel"] .reset-stats-btn:hover {
+    background-color: #ff9aa2;
+}
+
+[data-theme="dark"] .chart-container {
+    background-color: rgba(40, 40, 65, 0.9);
+}
+
+[data-theme="dark"] .chart-container canvas {
+    filter: drop-shadow(0px 0px 1px rgba(255, 255, 255, 0.3));
+}
+
 /* Settings Styles */
 .settings-container {
     display: grid;
@@ -502,10 +690,11 @@ section h2 i {
 }
 
 .setting-group {
-    background-color: #fff;
+    background-color: var(--card-background);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 3px 10px var(--shadow-color);
+    color: var(--text-color);
 }
 
 .setting-group h3 {
@@ -551,11 +740,11 @@ section h2 i {
 }
 
 .color-preview.dark {
-    background: linear-gradient(45deg, #424242, #212121);
+    background: linear-gradient(45deg, #ff7eb6, #7e4dd2);
 }
 
 .color-preview.pastel {
-    background: linear-gradient(45deg, #ffafbd, #ffc3a0);
+    background: linear-gradient(45deg, #ffafcc, #bdb2ff);
 }
 
 .cat-option img {
@@ -584,6 +773,7 @@ section h2 i {
     position: relative;
     cursor: pointer;
     padding-right: 60px;
+    color: var(--text-color);
 }
 
 .toggle-setting label:after {
@@ -690,10 +880,11 @@ section h2 i {
 @media (max-width: 768px) {
     header {
         flex-direction: column;
+        padding: 15px;
     }
     
     nav {
-        margin-top: 20px;
+        margin-top: 15px;
         width: 100%;
     }
     
@@ -720,39 +911,53 @@ section h2 i {
     }
     
     .timer-display {
-        font-size: 4rem;
+        font-size: 3.5rem;
+        padding: 15px;
     }
     
-    .timer-settings {
-        flex-direction: column;
-        align-items: center;
+    .timer-controls {
+        flex-wrap: wrap;
+        justify-content: center;
     }
     
     .timer-btn {
+        margin: 5px;
         padding: 10px 20px;
         font-size: 1rem;
-        margin: 5px;
     }
     
     .stats {
         flex-direction: column;
+        gap: 15px;
     }
     
     .setting-group {
-        grid-column: 1 / -1;
+        margin-bottom: 30px;
     }
     
     .blocker-content {
-        margin: 20px;
-        padding: 20px;
+        width: 90%;
     }
     
     .logo img {
-        height: 50px;
+        height: 40px;
     }
     
     .logo h1 {
         font-size: 1.8rem;
+    }
+    
+    .task-actions button {
+        margin-left: 5px;
+    }
+    
+    .theme-options, .cat-options {
+        flex-wrap: wrap;
+    }
+    
+    .reset-stats-btn {
+        width: 100%;
+        justify-content: center;
     }
 }
 
@@ -942,6 +1147,7 @@ section h2 i {
 
 [data-theme="dark"] .browser-content {
     background: #222;
+    color: var(--text-color);
 }
 
 [data-theme="dark"] .browser-placeholder {
@@ -973,22 +1179,20 @@ section h2 i {
     border-radius: 50%;
     padding: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
 }
 
-/* State-specific background effects */
-.cat-state-focus.svg-cat-container {
-    background-color: rgba(255, 236, 217, 0.8);
-    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.2);
+.svg-cat-container:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-.cat-state-break.svg-cat-container {
-    background-color: rgba(217, 242, 255, 0.8);
-    box-shadow: 0 4px 20px rgba(102, 216, 245, 0.25);
+[data-theme="dark"] .svg-cat-container:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
-.cat-state-pause.svg-cat-container {
-    background-color: rgba(240, 240, 240, 0.8);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+[data-theme="pastel"] .svg-cat-container:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .svg-cat {
@@ -997,24 +1201,50 @@ section h2 i {
     transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.cat-animation {
-    margin: 30px 0;
-    text-align: center;
-    position: relative;
-}
-
-/* Add some ambient effects */
-@keyframes ambient-glow {
-    0%, 100% {
-        box-shadow: 0 4px 20px rgba(255, 107, 107, 0.2);
-    }
-    50% {
-        box-shadow: 0 4px 25px rgba(255, 107, 107, 0.35);
-    }
-}
-
+/* State-specific background effects */
 .cat-state-focus.svg-cat-container {
-    animation: ambient-glow 4s infinite alternate;
+    background-color: rgba(255, 236, 217, 0.8);
+    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.2);
+}
+
+[data-theme="dark"] .cat-state-focus.svg-cat-container {
+    background-color: rgba(70, 60, 80, 0.8);
+    box-shadow: 0 4px 20px rgba(255, 126, 182, 0.3);
+}
+
+[data-theme="pastel"] .cat-state-focus.svg-cat-container {
+    background-color: rgba(255, 245, 250, 0.8);
+    box-shadow: 0 4px 20px rgba(255, 175, 204, 0.25);
+}
+
+.cat-state-break.svg-cat-container {
+    background-color: rgba(217, 242, 255, 0.8);
+    box-shadow: 0 4px 20px rgba(102, 216, 245, 0.25);
+}
+
+[data-theme="dark"] .cat-state-break.svg-cat-container {
+    background-color: rgba(55, 65, 90, 0.8);
+    box-shadow: 0 4px 20px rgba(80, 181, 233, 0.3);
+}
+
+[data-theme="pastel"] .cat-state-break.svg-cat-container {
+    background-color: rgba(235, 245, 255, 0.8);
+    box-shadow: 0 4px 20px rgba(162, 210, 255, 0.25);
+}
+
+.cat-state-pause.svg-cat-container {
+    background-color: rgba(240, 240, 240, 0.8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .cat-state-pause.svg-cat-container {
+    background-color: rgba(60, 60, 70, 0.8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="pastel"] .cat-state-pause.svg-cat-container {
+    background-color: rgba(245, 245, 240, 0.8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 /* Cat ears animation */
@@ -1041,8 +1271,14 @@ section h2 i {
 }
 
 .cat-state-break .svg-cat {
-    transform: rotate(10deg);
-    filter: saturate(1.2);
+    transform: rotate(5deg);
+    filter: saturate(1.1);
+    animation: sleepy-wobble 6s infinite ease-in-out;
+}
+
+@keyframes sleepy-wobble {
+    0%, 100% { transform: rotate(5deg); }
+    50% { transform: rotate(3deg) translateY(3px); }
 }
 
 .cat-state-break .cat-eye {
@@ -1059,7 +1295,7 @@ section h2 i {
 }
 
 .cat-state-break .cat-mouth {
-    d: path("M216,326 Q256,336 296,326");
+    d: path("M226,320 Q256,330 286,320");
 }
 
 .cat-state-break .cat-whisker {
@@ -1067,8 +1303,16 @@ section h2 i {
 }
 
 .cat-state-pause .svg-cat {
-    filter: grayscale(0.3);
-    transform: scale(0.97);
+    filter: grayscale(0.2);
+    transform: scale(0.98);
+    animation: alert-twitch 5s infinite;
+}
+
+@keyframes alert-twitch {
+    0%, 80%, 100% { transform: scale(0.98); }
+    85% { transform: scale(1.01); }
+    90% { transform: scale(0.99); }
+    95% { transform: scale(1); }
 }
 
 .cat-state-pause .cat-pupil {
@@ -1076,8 +1320,14 @@ section h2 i {
 }
 
 .cat-state-pause .cat-ear {
-    transform: rotate(5deg);
-    animation: pause-ear 3s infinite alternate;
+    transform: rotate(0deg);
+    animation: alert-ears 3s infinite alternate;
+}
+
+@keyframes alert-ears {
+    0%, 100% { transform: rotate(0); }
+    30% { transform: rotate(3deg); }
+    60% { transform: rotate(-3deg); }
 }
 
 .cat-state-idle .svg-cat {
@@ -1128,11 +1378,6 @@ section h2 i {
     75% { transform: translateX(5px); }
 }
 
-@keyframes pause-ear {
-    0%, 100% { transform: rotate(0); }
-    50% { transform: rotate(5deg); }
-}
-
 @keyframes idle-sway {
     0%, 100% { transform: rotate(-2deg); }
     50% { transform: rotate(2deg); }
@@ -1153,4 +1398,159 @@ section h2 i {
 @keyframes focus-pupils {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(0.8); }
+}
+
+/* Add ambient glow specific to each theme */
+@keyframes ambient-glow-default {
+    0%, 100% { box-shadow: 0 4px 20px rgba(255, 107, 107, 0.2); }
+    50% { box-shadow: 0 4px 25px rgba(255, 107, 107, 0.35); }
+}
+
+@keyframes ambient-glow-dark {
+    0%, 100% { box-shadow: 0 4px 20px rgba(255, 126, 182, 0.25); }
+    50% { box-shadow: 0 4px 25px rgba(255, 126, 182, 0.4); }
+}
+
+@keyframes ambient-glow-pastel {
+    0%, 100% { box-shadow: 0 4px 20px rgba(255, 175, 204, 0.2); }
+    50% { box-shadow: 0 4px 25px rgba(255, 175, 204, 0.3); }
+}
+
+.cat-state-focus.svg-cat-container {
+    animation: ambient-glow-default 4s infinite alternate;
+}
+
+[data-theme="dark"] .cat-state-focus.svg-cat-container {
+    animation: ambient-glow-dark 4s infinite alternate;
+}
+
+[data-theme="pastel"] .cat-state-focus.svg-cat-container {
+    animation: ambient-glow-pastel 4s infinite alternate;
+}
+
+[data-theme="dark"] nav ul li a {
+    color: var(--text-color);
+}
+
+[data-theme="dark"] section h2,
+[data-theme="dark"] .setting-group h3 {
+    color: var(--primary-color);
+}
+
+[data-theme="pastel"] section h2,
+[data-theme="pastel"] .setting-group h3 {
+    color: var(--primary-color);
+}
+
+.task-text {
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .task-text {
+    color: var(--text-color);
+}
+
+[data-theme="pastel"] .task-text {
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .browser-content {
+    background: #222;
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .stat-card {
+    background-color: rgba(40, 40, 65, 0.9);
+    color: var(--text-color);
+}
+
+[data-theme="pastel"] .stat-card {
+    background-color: rgba(255, 250, 240, 0.9);
+}
+
+[data-theme="dark"] .stat-card h4 {
+    color: var(--secondary-color);
+}
+
+[data-theme="pastel"] .stat-card h4 {
+    color: var(--secondary-color);
+}
+
+[data-theme="dark"] .stat-card p {
+    color: var(--primary-color);
+}
+
+[data-theme="pastel"] .stat-card p {
+    color: var(--primary-color);
+}
+
+/* Cat element animations */
+.cat-blush {
+    opacity: 0.6;
+    transition: opacity 0.5s ease;
+}
+
+.cat-state-focus .cat-blush {
+    opacity: 0.8;
+    animation: blush-pulse 4s infinite alternate;
+}
+
+.cat-state-break .cat-blush {
+    opacity: 0.4;
+}
+
+.cat-eye-highlight, .cat-eye-highlight-small {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.cat-state-focus .cat-eye-highlight {
+    animation: highlight-twinkle 3s infinite alternate;
+}
+
+.cat-state-break .cat-eye-highlight {
+    transform: translate(2px, 2px) scale(0.8);
+    opacity: 0.7;
+}
+
+.cat-state-break .cat-eye-highlight-small {
+    opacity: 0;
+}
+
+@keyframes blush-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes highlight-twinkle {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(0.9); opacity: 0.8; }
+}
+
+/* Update existing animations to work with new cat elements */
+.cat-state-focus .cat-nose {
+    animation: nose-wiggle 5s infinite;
+}
+
+@keyframes nose-wiggle {
+    0%, 90%, 100% { transform: scale(1); }
+    95% { transform: scale(1.1); }
+}
+
+/* Break state animations */
+.cat-state-break .cat-mouth {
+    d: path("M226,320 Q256,330 286,320");
+}
+
+/* Add cute animation for focus mode */
+.cat-state-focus .cat-ear {
+    transform-origin: bottom center;
+    animation: ear-wiggle 7s infinite;
+}
+
+@keyframes ear-wiggle {
+    0%, 85%, 100% { transform: rotate(0); }
+    88% { transform: rotate(-5deg); }
+    91% { transform: rotate(5deg); }
+    94% { transform: rotate(-3deg); }
+    97% { transform: rotate(2deg); }
 } 
