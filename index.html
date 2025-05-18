@@ -6,19 +6,134 @@
     <title>FocusPaws - Cat-Themed Productivity App</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Inline script for immediate DOM check -->
+    <script>
+        console.log('DOM loading started');
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded');
+        });
+    </script>
+    <style>
+        /* Fallback icons for missing images */
+        .cat-icon {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M290.59 192c-20.18 0-106.82 1.98-162.59 85.95V192c0-52.94-43.06-96-96-96-17.67 0-32 14.33-32 32s14.33 32 32 32c17.64 0 32 14.36 32 32v256c0 35.3 28.7 64 64 64h176c8.84 0 16-7.16 16-16v-16c0-17.67-14.33-32-32-32h-32l128-96v144c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V289.86c-10.29 2.67-20.89 4.54-32 4.54-61.81 0-113.52-44.05-125.41-102.4zM448 96h-64l-64-64v134.4c0 53.02 42.98 96 96 96s96-42.98 96-96V32l-64 64zm-72 80c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16zm80 0c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16z'%3E%3C/path%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M290.59 192c-20.18 0-106.82 1.98-162.59 85.95V192c0-52.94-43.06-96-96-96-17.67 0-32 14.33-32 32s14.33 32 32 32c17.64 0 32 14.36 32 32v256c0 35.3 28.7 64 64 64h176c8.84 0 16-7.16 16-16v-16c0-17.67-14.33-32-32-32h-32l128-96v144c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V289.86c-10.29 2.67-20.89 4.54-32 4.54-61.81 0-113.52-44.05-125.41-102.4zM448 96h-64l-64-64v134.4c0 53.02 42.98 96 96 96s96-42.98 96-96V32l-64 64zm-72 80c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16zm80 0c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16z'%3E%3C/path%3E%3C/svg%3E");
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+        }
+        
+        .cat-shield {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+        }
+        
+        .cat-shield::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--secondary-color);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M496 128c0 221.282-135.934 344.645-221.539 380.308a48 48 0 0 1-36.923 0C130.495 463.713 16 328.698 16 109.539V48a16 16 0 0 1 16-16h80a16 16 0 0 1 16 16v16c0 32.8 14.3 62.8 38 84 17.3 15.3 38.2 24.8 61 28 3.9.5 8.1.8 12.2.8s8.3-.3 12.2-.8c22.8-3.2 43.7-12.7 61-28 23.7-21.2 38-51.2 38-84V48a16 16 0 0 1 16-16h80a16 16 0 0 1 16 16v80c0-1.3 4.9-3.5 0 0z'%3E%3C/path%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M496 128c0 221.282-135.934 344.645-221.539 380.308a48 48 0 0 1-36.923 0C130.495 463.713 16 328.698 16 109.539V48a16 16 0 0 1 16-16h80a16 16 0 0 1 16 16v16c0 32.8 14.3 62.8 38 84 17.3 15.3 38.2 24.8 61 28 3.9.5 8.1.8 12.2.8s8.3-.3 12.2-.8c22.8-3.2 43.7-12.7 61-28 23.7-21.2 38-51.2 38-84V48a16 16 0 0 1 16-16h80a16 16 0 0 1 16 16v80c0-1.3 4.9-3.5 0 0z'%3E%3C/path%3E%3C/svg%3E");
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+        }
+        
+        .cat-shield::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 60%;
+            background-color: var(--primary-color);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M290.59 192c-20.18 0-106.82 1.98-162.59 85.95V192c0-52.94-43.06-96-96-96-17.67 0-32 14.33-32 32s14.33 32 32 32c17.64 0 32 14.36 32 32v256c0 35.3 28.7 64 64 64h176c8.84 0 16-7.16 16-16v-16c0-17.67-14.33-32-32-32h-32l128-96v144c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V289.86c-10.29 2.67-20.89 4.54-32 4.54-61.81 0-113.52-44.05-125.41-102.4zM448 96h-64l-64-64v134.4c0 53.02 42.98 96 96 96s96-42.98 96-96V32l-64 64zm-72 80c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16zm80 0c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16z'%3E%3C/path%3E%3C/svg%3E");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M290.59 192c-20.18 0-106.82 1.98-162.59 85.95V192c0-52.94-43.06-96-96-96-17.67 0-32 14.33-32 32s14.33 32 32 32c17.64 0 32 14.36 32 32v256c0 35.3 28.7 64 64 64h176c8.84 0 16-7.16 16-16v-16c0-17.67-14.33-32-32-32h-32l128-96v144c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V289.86c-10.29 2.67-20.89 4.54-32 4.54-61.81 0-113.52-44.05-125.41-102.4zM448 96h-64l-64-64v134.4c0 53.02 42.98 96 96 96s96-42.98 96-96V32l-64 64zm-72 80c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16zm80 0c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16z'%3E%3C/path%3E%3C/svg%3E");
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+        }
+
+        /* MeowBlock button styles */
+        .meowblock-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .meowblock-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .meowblock-button:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .meowblock-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+        }
+
+        .meowblock-description {
+            max-width: 600px;
+            margin: 20px auto;
+            line-height: 1.6;
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
         <header>
             <div class="logo">
-                <img src="img/pawshield.png" alt="FocusPaws Logo" id="app-logo">
+                <img src="img/focus_paws.png" alt="FocusPaws Logo" id="app-logo">
                 <h1>FocusPaws</h1>
             </div>
             <nav>
                 <ul>
-                    <li><a href="#" data-section="blocker" class="active">Website Blocker</a></li>
-                    <li><a href="#" data-section="timer">Focus Timer</a></li>
+                    <li><a href="#" data-section="timer" class="active">Purrmodoro</a></li>
                     <li><a href="#" data-section="tasks">Tasks</a></li>
+                    <li><a href="#" data-section="meowblock">MeowBlock</a></li>
                     <li><a href="#" data-section="progress">Progress</a></li>
                     <li><a href="#" data-section="settings">Settings</a></li>
                 </ul>
@@ -26,43 +141,71 @@
         </header>
 
         <main>
-            <!-- Website Blocker Section -->
-            <section id="blocker-section" class="active-section">
-                <h2>Website Blocker <i class="fas fa-shield-cat"></i></h2>
-                <div class="blocker-form">
-                    <input type="text" id="website-url" placeholder="Enter website URL (e.g., facebook.com)">
-                    <button id="block-btn">Block Website</button>
-                </div>
-                <div class="blocked-sites">
-                    <h3>Blocked Websites</h3>
-                    <ul id="blocked-list">
-                        <!-- Blocked sites will be listed here -->
-                    </ul>
-                </div>
-            </section>
-
             <!-- Focus Timer Section -->
-            <section id="timer-section">
-                <h2>Focus Timer <i class="fas fa-clock"></i></h2>
+            <section id="timer-section" class="active-section">
+                <h2>Purrmodoro <i class="fas fa-clock"></i></h2>
                 <div class="timer-container">
                     <div class="timer-display">
                         <span id="minutes">25</span>:<span id="seconds">00</span>
                     </div>
                     <div class="cat-animation">
-                        <img src="img/cat-working.png" id="cat-status" alt="Cat animation">
+                        <!-- Enhanced SVG Cat Animation with better ears -->
+                        <div class="svg-cat-container" id="cat-status">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-cat">
+                                <!-- Cat head shape -->
+                                <circle cx="256" cy="256" r="150" fill="#FFD7BA" />
+                                
+                                <!-- Improved cat ears - more triangular and detailed -->
+                                <path d="M156,116 L206,216 L126,196 Z" fill="#FFD7BA" stroke="#F0C9AD" stroke-width="2" class="cat-ear cat-ear-left" />
+                                <path d="M356,116 L306,216 L386,196 Z" fill="#FFD7BA" stroke="#F0C9AD" stroke-width="2" class="cat-ear cat-ear-right" />
+                                
+                                <!-- Inner ear details -->
+                                <path d="M156,126 L196,206" stroke="#F0C9AD" stroke-width="4" class="cat-ear-inner cat-ear-inner-left" />
+                                <path d="M356,126 L316,206" stroke="#F0C9AD" stroke-width="4" class="cat-ear-inner cat-ear-inner-right" />
+                                
+                                <!-- Cat eyes - more expressive with eyelids -->
+                                <ellipse cx="206" cy="236" rx="25" ry="20" fill="#333" class="cat-eye cat-eye-left" />
+                                <ellipse cx="306" cy="236" rx="25" ry="20" fill="#333" class="cat-eye cat-eye-right" />
+                                
+                                <!-- Eyelids that can close -->
+                                <path d="M181,236 Q206,216 231,236" fill="transparent" stroke="#333" stroke-width="3" class="cat-eyelid cat-eyelid-left" />
+                                <path d="M281,236 Q306,216 331,236" fill="transparent" stroke="#333" stroke-width="3" class="cat-eyelid cat-eyelid-right" />
+                                
+                                <!-- Cat pupils - larger and more expressive -->
+                                <circle cx="206" cy="236" r="12" fill="#fff" class="cat-pupil cat-pupil-left" />
+                                <circle cx="306" cy="236" r="12" fill="#fff" class="cat-pupil cat-pupil-right" />
+                                
+                                <!-- Cat nose - slightly larger and pinker -->
+                                <path d="M256,276 L246,296 L266,296 Z" fill="#ff9e9e" class="cat-nose" />
+                                
+                                <!-- Cat mouth - more dynamic -->
+                                <path d="M216,316 Q256,346 296,316" fill="none" stroke="#333" stroke-width="3" class="cat-mouth" />
+                                
+                                <!-- Cat whiskers - more and better positioned -->
+                                <line x1="136" y1="286" x2="216" y2="286" stroke="#999" stroke-width="2" class="cat-whisker" />
+                                <line x1="136" y1="296" x2="216" y2="296" stroke="#999" stroke-width="2" class="cat-whisker" />
+                                <line x1="136" y1="306" x2="216" y2="306" stroke="#999" stroke-width="2" class="cat-whisker" />
+                                
+                                <line x1="376" y1="286" x2="296" y2="286" stroke="#999" stroke-width="2" class="cat-whisker" />
+                                <line x1="376" y1="296" x2="296" y2="296" stroke="#999" stroke-width="2" class="cat-whisker" />
+                                <line x1="376" y1="306" x2="296" y2="306" stroke="#999" stroke-width="2" class="cat-whisker" />
+                            </svg>
+                        </div>
+                        <!-- Fallback image -->
+                        <img src="img/cat-working.png" alt="Cat animation" id="cat-image" style="display:none;">
                     </div>
                     <div class="timer-controls">
-                        <button id="start-timer">Start</button>
-                        <button id="pause-timer">Pause</button>
-                        <button id="reset-timer">Reset</button>
+                        <button id="start-timer" class="timer-btn">Start</button>
+                        <button id="pause-timer" class="timer-btn" disabled>Pause</button>
+                        <button id="reset-timer" class="timer-btn" disabled>Reset</button>
                     </div>
                     <div class="timer-settings">
                         <div class="setting">
-                            <label for="work-duration">Work Duration:</label>
+                            <label for="work-duration">Work Duration (mins):</label>
                             <input type="number" id="work-duration" min="1" max="60" value="25">
                         </div>
                         <div class="setting">
-                            <label for="break-duration">Break Duration:</label>
+                            <label for="break-duration">Break Duration (mins):</label>
                             <input type="number" id="break-duration" min="1" max="30" value="5">
                         </div>
                     </div>
@@ -84,9 +227,29 @@
                 </div>
                 <div class="task-completion">
                     <div class="cat-reward" id="task-reward" style="display: none;">
-                        <img src="img/cat-celebration.png" alt="Celebration cat">
+                        <!-- Added fallback for reward cat -->
+                        <div class="cat-icon" id="cat-celebration-fallback" style="display:none; height:100px; width:100px;"></div>
+                        <img src="img/cat-celebration.png" alt="Celebration cat" onerror="this.style.display='none';document.getElementById('cat-celebration-fallback').style.display='block';">
                         <p>Purrfect! You completed a task!</p>
                     </div>
+                </div>
+            </section>
+
+            <!-- MeowBlock Section -->
+            <section id="meowblock-section">
+                <h2>MeowBlock <i class="fas fa-shield-cat"></i></h2>
+                <div class="meowblock-container">
+                    <img src="img/pawshield.png" alt="MeowBlock Logo" class="meowblock-logo">
+                    <h3>MeowBlock Website Blocker</h3>
+                    <p class="meowblock-description">
+                        Boost your productivity with MeowBlock, a playful cat-themed website blocker extension.
+                        Block distracting websites and stay focused with feline assistance!
+                    </p>
+                    <button id="open-meowblock-btn" class="meowblock-button" onclick="window.open('https://meowblock.netlify.app/', '_blank')">
+                        <i class="fas fa-external-link-alt"></i>
+                        Open MeowBlock
+                    </button>
+                    <p>Click the button to install the extension</p>
                 </div>
             </section>
 
@@ -143,15 +306,19 @@
                         <h3>Cat Character</h3>
                         <div class="cat-options">
                             <div class="cat-option" data-cat="tabby">
-                                <img src="img/cat-tabby.png" alt="Tabby Cat">
+                                <!-- Added fallbacks for cat options -->
+                                <div class="cat-icon" style="width:60px; height:60px; border-radius:50%; display:none;" id="cat-tabby-fallback"></div>
+                                <img src="img/cat-tabby.png" alt="Tabby Cat" onerror="this.style.display='none';document.getElementById('cat-tabby-fallback').style.display='block';">
                                 <span>Tabby</span>
                             </div>
                             <div class="cat-option" data-cat="siamese">
-                                <img src="img/cat-siamese.png" alt="Siamese Cat">
+                                <div class="cat-icon" style="width:60px; height:60px; border-radius:50%; display:none;" id="cat-siamese-fallback"></div>
+                                <img src="img/cat-siamese.png" alt="Siamese Cat" onerror="this.style.display='none';document.getElementById('cat-siamese-fallback').style.display='block';">
                                 <span>Siamese</span>
                             </div>
                             <div class="cat-option" data-cat="calico">
-                                <img src="img/cat-calico.png" alt="Calico Cat">
+                                <div class="cat-icon" style="width:60px; height:60px; border-radius:50%; display:none;" id="cat-calico-fallback"></div>
+                                <img src="img/cat-calico.png" alt="Calico Cat" onerror="this.style.display='none';document.getElementById('cat-calico-fallback').style.display='block';">
                                 <span>Calico</span>
                             </div>
                         </div>
@@ -174,7 +341,9 @@
 
         <div class="blocker-overlay" id="blocker-overlay">
             <div class="blocker-content">
-                <img src="img/cat-no.png" alt="Blocked by Cat" class="block-cat">
+                <!-- Added fallback for blocking cat -->
+                <div class="cat-icon" id="cat-no-fallback" style="display:none; width:200px; height:200px; margin:0 auto;"></div>
+                <img src="img/cat-no.png" alt="Blocked by Cat" class="block-cat" onerror="this.style.display='none';document.getElementById('cat-no-fallback').style.display='block';">
                 <h2>Meow! This site is blocked</h2>
                 <p>Your feline friend is keeping you on track!</p>
                 <p class="site-name">Trying to access: <span id="blocked-site-name"></span></p>
@@ -186,5 +355,25 @@
     <!-- Script imports -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="app.js"></script>
+    
+    <!-- Debug script to verify everything loaded -->
+    <script>
+        window.addEventListener('load', function() {
+            console.log('Window fully loaded');
+            console.log('Checking key elements:');
+            console.log('Timer start button:', document.getElementById('start-timer'));
+            console.log('Task input:', document.getElementById('task-input'));
+            console.log('Progress chart:', document.getElementById('productivity-chart'));
+            
+            // Test localStorage
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                console.log('LocalStorage working properly');
+            } catch (e) {
+                console.error('LocalStorage not available:', e);
+            }
+        });
+    </script>
 </body>
 </html> 

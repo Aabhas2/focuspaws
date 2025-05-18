@@ -25,36 +25,77 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
+    position: relative;
+}
+
+/* Wallpaper Background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('img/wallpaper.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.15; /* Reduced opacity */
+    z-index: -1;
 }
 
 .app-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    position: relative;
+    z-index: 1;
 }
 
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 20px;
+    padding: 20px 0;
     border-bottom: 2px solid var(--border-color);
     margin-bottom: 30px;
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 12px;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] header {
+    background-color: rgba(33, 33, 33, 0.9);
+}
+
+[data-theme="pastel"] header {
+    background-color: rgba(253, 255, 237, 0.85);
 }
 
 .logo {
     display: flex;
     align-items: center;
+    gap: 15px;
+    padding: 10px;
 }
 
 .logo img {
-    height: 40px;
-    margin-right: 10px;
+    height: 60px;
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
 }
 
 .logo h1 {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     color: var(--primary-color);
+    font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
 nav ul {
@@ -88,6 +129,17 @@ section {
     padding: 20px;
     box-shadow: 0 5px 15px var(--shadow-color);
     margin-bottom: 30px;
+    position: relative;
+    backdrop-filter: blur(5px);
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="dark"] section {
+    background-color: rgba(33, 33, 33, 0.9);
+}
+
+[data-theme="pastel"] section {
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 section.active-section {
@@ -176,11 +228,40 @@ section h2 i {
     text-align: center;
 }
 
+.timer-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    margin: 0 10px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(255, 107, 107, 0.2);
+}
+
+.timer-btn:hover:not(:disabled) {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+.timer-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 .timer-display {
-    font-size: 5rem;
+    font-size: 6rem;
     font-weight: bold;
     color: var(--primary-color);
-    margin-bottom: 20px;
+    margin: 30px 0;
+    text-shadow: 2px 2px 10px rgba(255, 107, 107, 0.2);
+    font-family: 'Roboto Mono', monospace;
 }
 
 .cat-animation {
@@ -196,43 +277,37 @@ section h2 i {
     margin-bottom: 20px;
 }
 
-.timer-controls button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    margin: 0 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.timer-controls button:hover {
-    background-color: var(--accent-color);
-}
-
 .timer-settings {
+    margin-top: 30px;
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
+    gap: 30px;
 }
 
 .setting {
     display: flex;
     align-items: center;
-}
-
-.setting label {
-    margin-right: 10px;
+    gap: 10px;
 }
 
 .setting input {
-    width: 60px;
-    padding: 5px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
+    width: 70px;
+    padding: 8px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
     text-align: center;
+    transition: border-color 0.3s ease;
+}
+
+.setting input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.setting label {
+    font-weight: 500;
+    color: var(--text-color);
 }
 
 /* Task Manager Styles */
@@ -273,18 +348,52 @@ section h2 i {
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
-    border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.3s ease;
+    background-color: var(--card-background);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    cursor: grab;
+    position: relative;
+}
+
+#task-list li.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+#task-list li.drag-above {
+    border-top: 2px solid var(--primary-color);
+}
+
+#task-list li.drag-below {
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.task-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.drag-handle {
+    color: var(--border-color);
+    cursor: grab;
+}
+
+.dragging .drag-handle {
+    cursor: grabbing;
+}
+
+.task-actions {
+    display: flex;
+    gap: 8px;
 }
 
 #task-list li.completed {
     background-color: rgba(76, 175, 80, 0.1);
     text-decoration: line-through;
     color: #888;
-}
-
-.task-actions {
-    display: flex;
 }
 
 .task-actions button {
@@ -610,9 +719,19 @@ section h2 i {
         border-radius: 5px;
     }
     
+    .timer-display {
+        font-size: 4rem;
+    }
+    
     .timer-settings {
         flex-direction: column;
-        gap: 10px;
+        align-items: center;
+    }
+    
+    .timer-btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+        margin: 5px;
     }
     
     .stats {
@@ -627,4 +746,411 @@ section h2 i {
         margin: 20px;
         padding: 20px;
     }
+    
+    .logo img {
+        height: 50px;
+    }
+    
+    .logo h1 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Browser Simulator Styles */
+.browser-simulator {
+    margin-top: 40px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 30px;
+}
+
+.browser-simulator h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.browser-mock {
+    width: 100%;
+    height: 400px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px var(--shadow-color);
+    margin: 20px 0;
+    border: 1px solid var(--border-color);
+}
+
+.browser-header {
+    background: #f1f1f1;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+}
+
+.browser-actions {
+    display: flex;
+    gap: 5px;
+    margin-right: 15px;
+}
+
+.browser-action {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.browser-action.red {
+    background-color: #ff5f56;
+}
+
+.browser-action.yellow {
+    background-color: #ffbd2e;
+}
+
+.browser-action.green {
+    background-color: #27c93f;
+}
+
+.browser-address-bar {
+    flex: 1;
+    display: flex;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.browser-address-bar input {
+    flex: 1;
+    padding: 8px 15px;
+    border: none;
+    outline: none;
+}
+
+.browser-address-bar button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.browser-address-bar button:hover {
+    background-color: var(--accent-color);
+}
+
+.browser-content {
+    height: calc(100% - 40px);
+    overflow: auto;
+    background-color: #fff;
+}
+
+#browser-display {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.browser-placeholder {
+    text-align: center;
+    color: #888;
+}
+
+.browser-placeholder i {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.browser-website {
+    padding: 20px;
+}
+
+.browser-website.social {
+    background-color: #3b5998;
+    color: white;
+}
+
+.browser-website.video {
+    background-color: #ff0000;
+    color: white;
+}
+
+.browser-website.shopping {
+    background-color: #ff9900;
+    color: white;
+}
+
+.browser-website.productive {
+    background-color: #4caf50;
+    color: white;
+}
+
+.browser-instructions {
+    background-color: #f9f9f9;
+    padding: 15px 20px;
+    border-radius: 10px;
+    border-left: 4px solid var(--primary-color);
+    margin-top: 20px;
+}
+
+.browser-instructions ul {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.browser-instructions li {
+    margin-bottom: 5px;
+}
+
+/* Additional Responsive Design for Browser Simulator */
+@media (max-width: 768px) {
+    .browser-mock {
+        height: 300px;
+    }
+    
+    .browser-actions {
+        margin-right: 10px;
+    }
+    
+    .browser-action {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+/* Dark theme adjustments for browser simulator */
+[data-theme="dark"] .browser-mock {
+    border-color: #444;
+}
+
+[data-theme="dark"] .browser-header {
+    background: #333;
+    border-color: #444;
+}
+
+[data-theme="dark"] .browser-address-bar {
+    background: #222;
+    border-color: #444;
+}
+
+[data-theme="dark"] .browser-address-bar input {
+    background: #222;
+    color: #f5f5f5;
+}
+
+[data-theme="dark"] .browser-content {
+    background: #222;
+}
+
+[data-theme="dark"] .browser-placeholder {
+    color: #aaa;
+}
+
+[data-theme="dark"] .browser-instructions {
+    background-color: #333;
+}
+
+/* Pastel theme adjustments for browser simulator */
+[data-theme="pastel"] .browser-mock {
+    border-color: #dcd0d0;
+}
+
+[data-theme="pastel"] .browser-header {
+    background: #fdffed;
+    border-color: #dcd0d0;
+}
+
+/* Enhanced SVG Cat Animation Styles */
+.svg-cat-container {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    position: relative;
+    transition: transform 0.5s ease, background-color 0.5s ease, box-shadow 0.5s ease;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* State-specific background effects */
+.cat-state-focus.svg-cat-container {
+    background-color: rgba(255, 236, 217, 0.8);
+    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.2);
+}
+
+.cat-state-break.svg-cat-container {
+    background-color: rgba(217, 242, 255, 0.8);
+    box-shadow: 0 4px 20px rgba(102, 216, 245, 0.25);
+}
+
+.cat-state-pause.svg-cat-container {
+    background-color: rgba(240, 240, 240, 0.8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.svg-cat {
+    width: 100%;
+    height: 100%;
+    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cat-animation {
+    margin: 30px 0;
+    text-align: center;
+    position: relative;
+}
+
+/* Add some ambient effects */
+@keyframes ambient-glow {
+    0%, 100% {
+        box-shadow: 0 4px 20px rgba(255, 107, 107, 0.2);
+    }
+    50% {
+        box-shadow: 0 4px 25px rgba(255, 107, 107, 0.35);
+    }
+}
+
+.cat-state-focus.svg-cat-container {
+    animation: ambient-glow 4s infinite alternate;
+}
+
+/* Cat ears animation */
+.cat-ear {
+    transform-origin: bottom center;
+    transition: transform 0.5s ease;
+}
+
+/* Cat states with enhanced animations */
+.cat-state-focus .cat-ear {
+    animation: ear-twitch 8s infinite;
+}
+
+.cat-state-focus .cat-eye {
+    animation: blink 4s infinite;
+}
+
+.cat-state-focus .cat-pupil {
+    animation: focus-pupils 5s infinite;
+}
+
+.cat-state-focus .cat-whisker {
+    animation: whisker-twitch 10s infinite;
+}
+
+.cat-state-break .svg-cat {
+    transform: rotate(10deg);
+    filter: saturate(1.2);
+}
+
+.cat-state-break .cat-eye {
+    transform: scaleY(0.3);
+    animation: sleepy 3s infinite;
+}
+
+.cat-state-break .cat-ear {
+    transform: rotate(-5deg);
+}
+
+.cat-state-break .cat-ear-right {
+    transform: rotate(5deg);
+}
+
+.cat-state-break .cat-mouth {
+    d: path("M216,326 Q256,336 296,326");
+}
+
+.cat-state-break .cat-whisker {
+    animation: slow-whisker 6s infinite;
+}
+
+.cat-state-pause .svg-cat {
+    filter: grayscale(0.3);
+    transform: scale(0.97);
+}
+
+.cat-state-pause .cat-pupil {
+    animation: look-around 4s infinite;
+}
+
+.cat-state-pause .cat-ear {
+    transform: rotate(5deg);
+    animation: pause-ear 3s infinite alternate;
+}
+
+.cat-state-idle .svg-cat {
+    animation: idle-sway 6s infinite;
+}
+
+.cat-state-idle .cat-pupil {
+    animation: idle-pupils 8s infinite;
+}
+
+.cat-state-idle .cat-whisker {
+    animation: idle-whisker 7s infinite;
+}
+
+/* Enhanced Animations */
+@keyframes blink {
+    0%, 96%, 100% { transform: scaleY(1); }
+    97%, 99% { transform: scaleY(0.1); }
+}
+
+@keyframes ear-twitch {
+    0%, 90%, 100% { transform: rotate(0); }
+    92% { transform: rotate(-5deg); }
+    94% { transform: rotate(5deg); }
+    96% { transform: rotate(-3deg); }
+    98% { transform: rotate(0); }
+}
+
+@keyframes whisker-twitch {
+    0%, 95%, 100% { transform: rotate(0); }
+    96% { transform: rotate(-1deg); }
+    98% { transform: rotate(1deg); }
+}
+
+@keyframes slow-whisker {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(1px); }
+}
+
+@keyframes sleepy {
+    0%, 100% { transform: scaleY(0.3); }
+    50% { transform: scaleY(0.2); }
+}
+
+@keyframes look-around {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes pause-ear {
+    0%, 100% { transform: rotate(0); }
+    50% { transform: rotate(5deg); }
+}
+
+@keyframes idle-sway {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+}
+
+@keyframes idle-pupils {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(3px, 2px); }
+    50% { transform: translate(0, 4px); }
+    75% { transform: translate(-3px, 2px); }
+}
+
+@keyframes idle-whisker {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-1px); }
+}
+
+@keyframes focus-pupils {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(0.8); }
 } 
