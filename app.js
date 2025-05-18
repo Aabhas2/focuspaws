@@ -1416,7 +1416,7 @@ function showNotification(message) {
         if (Notification.permission === "granted") {
             new Notification("FocusPaws", {
                 body: message,
-                icon: "img/pawshield.png"
+                icon: "img/focus_paws.png"
             });
         }
     }
