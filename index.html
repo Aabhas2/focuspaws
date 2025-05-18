@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusPaws - Cat-Themed Productivity App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <img src="img/pawshield.png" alt="FocusPaws Logo" id="app-logo">
+                <h1>FocusPaws</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" data-section="blocker" class="active">Website Blocker</a></li>
+                    <li><a href="#" data-section="timer">Focus Timer</a></li>
+                    <li><a href="#" data-section="tasks">Tasks</a></li>
+                    <li><a href="#" data-section="progress">Progress</a></li>
+                    <li><a href="#" data-section="settings">Settings</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Website Blocker Section -->
+            <section id="blocker-section" class="active-section">
+                <h2>Website Blocker <i class="fas fa-shield-cat"></i></h2>
+                <div class="blocker-form">
+                    <input type="text" id="website-url" placeholder="Enter website URL (e.g., facebook.com)">
+                    <button id="block-btn">Block Website</button>
+                </div>
+                <div class="blocked-sites">
+                    <h3>Blocked Websites</h3>
+                    <ul id="blocked-list">
+                        <!-- Blocked sites will be listed here -->
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Focus Timer Section -->
+            <section id="timer-section">
+                <h2>Focus Timer <i class="fas fa-clock"></i></h2>
+                <div class="timer-container">
+                    <div class="timer-display">
+                        <span id="minutes">25</span>:<span id="seconds">00</span>
+                    </div>
+                    <div class="cat-animation">
+                        <img src="img/cat-working.png" id="cat-status" alt="Cat animation">
+                    </div>
+                    <div class="timer-controls">
+                        <button id="start-timer">Start</button>
+                        <button id="pause-timer">Pause</button>
+                        <button id="reset-timer">Reset</button>
+                    </div>
+                    <div class="timer-settings">
+                        <div class="setting">
+                            <label for="work-duration">Work Duration:</label>
+                            <input type="number" id="work-duration" min="1" max="60" value="25">
+                        </div>
+                        <div class="setting">
+                            <label for="break-duration">Break Duration:</label>
+                            <input type="number" id="break-duration" min="1" max="30" value="5">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Task Manager Section -->
+            <section id="tasks-section">
+                <h2>Task Manager <i class="fas fa-tasks"></i></h2>
+                <div class="task-form">
+                    <input type="text" id="task-input" placeholder="Enter a new task...">
+                    <button id="add-task-btn">Add Task</button>
+                </div>
+                <div class="task-list-container">
+                    <h3>Your Tasks</h3>
+                    <ul id="task-list">
+                        <!-- Tasks will be listed here -->
+                    </ul>
+                </div>
+                <div class="task-completion">
+                    <div class="cat-reward" id="task-reward" style="display: none;">
+                        <img src="img/cat-celebration.png" alt="Celebration cat">
+                        <p>Purrfect! You completed a task!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Tracker Section -->
+            <section id="progress-section">
+                <h2>Progress Tracker <i class="fas fa-chart-line"></i></h2>
+                <div class="progress-container">
+                    <div class="chart-container">
+                        <canvas id="productivity-chart"></canvas>
+                    </div>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h4>Focus Sessions</h4>
+                            <p id="focus-sessions">0</p>
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Tasks Completed</h4>
+                            <p id="completed-tasks">0</p>
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Total Focus Time</h4>
+                            <p id="total-focus-time">0 mins</p>
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section">
+                <h2>Settings <i class="fas fa-cog"></i></h2>
+                <div class="settings-container">
+                    <div class="setting-group">
+                        <h3>App Theme</h3>
+                        <div class="theme-options">
+                            <div class="theme-option" data-theme="default">
+                                <div class="color-preview default"></div>
+                                <span>Default</span>
+                            </div>
+                            <div class="theme-option" data-theme="dark">
+                                <div class="color-preview dark"></div>
+                                <span>Dark</span>
+                            </div>
+                            <div class="theme-option" data-theme="pastel">
+                                <div class="color-preview pastel"></div>
+                                <span>Pastel</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Cat Character</h3>
+                        <div class="cat-options">
+                            <div class="cat-option" data-cat="tabby">
+                                <img src="img/cat-tabby.png" alt="Tabby Cat">
+                                <span>Tabby</span>
+                            </div>
+                            <div class="cat-option" data-cat="siamese">
+                                <img src="img/cat-siamese.png" alt="Siamese Cat">
+                                <span>Siamese</span>
+                            </div>
+                            <div class="cat-option" data-cat="calico">
+                                <img src="img/cat-calico.png" alt="Calico Cat">
+                                <span>Calico</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Notifications</h3>
+                        <div class="toggle-setting">
+                            <label for="sound-toggle">Sound Effects</label>
+                            <input type="checkbox" id="sound-toggle" checked>
+                        </div>
+                        <div class="toggle-setting">
+                            <label for="notification-toggle">Desktop Notifications</label>
+                            <input type="checkbox" id="notification-toggle" checked>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <div class="blocker-overlay" id="blocker-overlay">
+            <div class="blocker-content">
+                <img src="img/cat-no.png" alt="Blocked by Cat" class="block-cat">
+                <h2>Meow! This site is blocked</h2>
+                <p>Your feline friend is keeping you on track!</p>
+                <p class="site-name">Trying to access: <span id="blocked-site-name"></span></p>
+                <button id="back-to-work-btn">Back to Work</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script imports -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 
