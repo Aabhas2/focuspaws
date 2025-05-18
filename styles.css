@@ -759,54 +759,76 @@ section h2 i {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
+/* Hide default checkbox */
 .toggle-setting input[type="checkbox"] {
     height: 0;
     width: 0;
-    visibility: hidden;
+    opacity: 0;
     position: absolute;
 }
 
-.toggle-setting label {
+/* The switch container */
+.toggle-switch {
     position: relative;
-    cursor: pointer;
-    padding-right: 60px;
-    color: var(--text-color);
-}
-
-.toggle-setting label:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
+    display: inline-block;
     width: 50px;
-    height: 26px;
-    background: #ccc;
-    border-radius: 26px;
-    transition: 0.3s;
+    height: 24px;
 }
 
-.toggle-setting label:before {
-    content: '';
+/* The slider background */
+.slider {
     position: absolute;
-    top: 3px;
-    right: 27px;
-    width: 20px;
-    height: 20px;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+/* The slider circle */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
     border-radius: 50%;
-    background: #fff;
-    transition: 0.3s;
-    z-index: 1;
 }
 
-.toggle-setting input:checked + label:after {
-    background: var(--success-color);
+/* When checked */
+input:checked + .slider {
+    background-color: var(--accent-color);
 }
 
-.toggle-setting input:checked + label:before {
-    right: 3px;
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .slider {
+    background-color: #444;
+}
+
+[data-theme="dark"] input:checked + .slider {
+    background-color: var(--accent-color);
+}
+
+/* Pastel theme adjustments */
+[data-theme="pastel"] .slider {
+    background-color: #dcd0d0;
+}
+
+[data-theme="pastel"] input:checked + .slider {
+    background-color: var(--accent-color);
 }
 
 /* Blocker Overlay */
