@@ -135,7 +135,7 @@ header {
 }
 
 .logo img {
-    height: 70px;
+    height: 85px;
     width: auto;
     transition: transform 0.3s ease;
 }
@@ -1553,4 +1553,46 @@ section h2 i {
     91% { transform: rotate(5deg); }
     94% { transform: rotate(-3deg); }
     97% { transform: rotate(2deg); }
+}
+
+/* App Notification Styles */
+.app-notification {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    font-weight: 500;
+    text-align: center;
+    max-width: 80%;
+}
+
+.app-notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+[data-theme="dark"] .app-notification {
+    background-color: var(--primary-color);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="pastel"] .app-notification {
+    background-color: var(--primary-color);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .app-notification {
+        padding: 12px 20px;
+        max-width: 90%;
+        bottom: 20px;
+    }
 } 
